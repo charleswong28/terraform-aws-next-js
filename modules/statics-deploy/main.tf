@@ -17,6 +17,14 @@ resource "aws_s3_bucket" "static_upload" {
 resource "aws_s3_bucket_acl" "static_upload" {
   bucket = aws_s3_bucket.static_upload.id
   acl    = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.static_upload_acl_ownership]
+}
+
+resource "aws_s3_bucket_ownership_controls" "static_upload_acl_ownership" {
+  bucket = aws_s3_bucket.static_upload.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 resource "aws_s3_bucket_notification" "on_create" {
@@ -42,6 +50,14 @@ resource "aws_s3_bucket" "static_deploy" {
 resource "aws_s3_bucket_acl" "static_deploy" {
   bucket = aws_s3_bucket.static_deploy.id
   acl    = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.static_deploy_acl_ownership]
+}
+
+resource "aws_s3_bucket_ownership_controls" "static_deploy_acl_ownership" {
+  bucket = aws_s3_bucket.static_deploy.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 # CloudFront permissions for the bucket
